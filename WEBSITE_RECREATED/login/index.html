@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Welcome back to Green Urban Farms. Green Urban Farms supports sustainable urban agriculture." name="description"/>
+  <title>
+   Login / Register | Green Urban Farms
+  </title>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script defer="" src="../js/script.js">
+  </script>
+ </head>
+ <body>
+  <header class="site-header">
+   <section class="container navbar">
+    <a class="brand" href="../index.html">
+     <img alt="" src="../images/Logo.png"/>
+     <span>
+      GREEN
+      <span>
+       URBAN FARMS
+      </span>
+     </span>
+    </a>
+    <button aria-expanded="false" aria-label="Open menu" class="menu-btn" type="button">
+     ☰
+    </button>
+    <nav aria-label="Main navigation">
+     <ul class="nav-links">
+      <li>
+       <a href="../index.html">
+        Home
+       </a>
+      </li>
+      <li>
+       <a href="../php_backend/programs.php">
+        Programs
+       </a>
+      </li>
+      <li>
+       <a href="../about/index.html">
+        About Us
+       </a>
+      </li>
+      <li>
+       <a href="../php_backend/resources.php">
+        Resources
+       </a>
+      </li>
+      <li>
+       <a href="../php_backend/events.php">
+        Events
+       </a>
+      </li>
+      <li>
+       <a href="../php_backend/get-involved.php">
+        Get Involved
+       </a>
+      </li>
+      <li>
+       <a href="../php_backend/contact.php">
+        Contact Us
+       </a>
+      </li>
+      <li>
+       <a href="index.html">
+        Log In
+       </a>
+      </li>
+     </ul>
+    </nav>
+   </section>
+  </header>
+  <main>
+   <section class="hero">
+    <section class="container hero-grid">
+     <section>
+      <span class="badge">
+       YOUR GROWING JOURNEY CONTINUES
+      </span>
+      <h1>
+       Welcome back to Green Urban Farms.
+      </h1>
+      <p class="lead">
+       Sign in to access your account, or create an account to get involved in Green Urban Farms programmes and activities.
+      </p>
+     </section>
+     <section class="hero-card">
+      <section class="plant">
+       🌿
+      </section>
+      <h2>
+       Growing better, together.
+      </h2>
+      <p>
+       Practical skills, shared knowledge and greener neighbourhoods start with one small step.
+      </p>
+     </section>
+    </section>
+   </section>
+   <section class="section section-soft">
+    <section class="container auth-forms">
+    <section class="auth-switch" aria-label="Choose account action">
+     <button class="auth-tab is-selected" type="button" data-form-target="login-form" aria-controls="login-form" aria-pressed="true">Log In</button>
+     <button class="auth-tab" type="button" data-form-target="register-form" aria-controls="register-form" aria-pressed="false">Create Account</button>
+    </section>
+
+    <form action="../php_backend/login.php" class="form-card form-box active" id="login-form" method="post">
+     <input type="hidden" name="action" value="login">
+     <p class="auth-intro">Welcome back. Sign in to continue your growing journey.</p>
+     <section class="field">
+      <label for="login-email">Email address</label>
+      <input autocomplete="email" id="login-email" name="email" required type="email">
+     </section>
+     <section class="field">
+      <label for="login-password">Password</label>
+      <input autocomplete="current-password" id="login-password" name="password" required type="password">
+     </section>
+     <button class="btn btn-blue auth-submit" type="submit">Log In</button>
+     <p class="form-note">New to Green Urban Farms? <a href="#register-form" data-form-target="register-form">Create an account</a>.</p>
+    </form>
+
+    <form action="../php_backend/login.php" class="form-card form-box" id="register-form" method="post">
+     <input type="hidden" name="action" value="register">
+     <p class="auth-intro">Join our community and grow greener neighbourhoods together.</p>
+     <section class="field">
+      <label for="reg-name">Full name</label>
+      <input autocomplete="name" id="reg-name" name="name" required type="text">
+     </section>
+     <section class="field">
+      <label for="reg-email">Email address</label>
+      <input autocomplete="email" id="reg-email" name="email" required type="email">
+     </section>
+     <section class="field">
+      <label for="reg-password">Create password</label>
+      <input autocomplete="new-password" id="reg-password" name="password" minlength="8" required type="password">
+     </section>
+     <button class="btn btn-primary auth-submit" type="submit">Register</button>
+     <p class="form-note">Already have an account? <a href="#login-form" data-form-target="login-form">Log in</a>.</p>
+    </form>
+   </section>
+   </section>
+  </main>
+  <footer class="site-footer">
+   <section class="container">
+    <section class="footer-grid">
+     <section>
+      <h3>
+       Green Urban Farms
+      </h3>
+      <p>
+        Empowering urban communities to grow fresh, 
+        healthy food through sustainable farming 
+        education and community participation.
+      </p>
+     </section>
+     <section>
+      <h4>
+       Explore
+      </h4>
+      <ul class="footer-links">
+       <li>
+        <a href="../php_backend/programs.php">
+         Programs
+        </a>
+       </li>
+       <li>
+        <a href="../about/index.html">
+         About Us
+        </a>
+       </li>
+       <li>
+        <a href="../php_backend/resources.php">
+         Resources
+        </a>
+       </li>
+       <li>
+        <a href="../php_backend/events.php">
+         Events
+        </a>
+       </li>
+      </ul>
+     </section>
+     <section>
+      <h4>
+       Get Connected
+      </h4>
+      <ul class="footer-links">
+       <li>
+        <a href="../php_backend/get-involved.php">
+         Volunteer with us
+        </a>
+       </li>
+       <li>
+        <a href="../php_backend/contact.php">
+         Contact the team
+        </a>
+       </li>
+       <li>
+        <a href="index.html">
+         Account login
+        </a>
+       </li>
+      </ul>
+     </section>
+    </section>
+    <section class="copyright">
+     &copy;
+     <span data-year="">
+      2026
+     </span>
+     Green Urban Farms. Growing a greener future together.
+    </section>
+   </section>
+  </footer>
+ </body>
+</html>
