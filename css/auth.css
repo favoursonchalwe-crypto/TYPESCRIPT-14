@@ -1,0 +1,16 @@
+/* Authentication and password recovery pages only. */
+.auth, .auth-forms, .recovery-card { box-sizing: border-box; }
+.auth { width: min(100% - 32px, 560px); margin: 48px auto; padding: clamp(22px, 5vw, 36px); background: #fff; border: 1px solid var(--line, #dce8e2); border-radius: 18px; box-shadow: var(--shadow, 0 18px 45px rgba(18,59,98,.12)); }
+.auth form { display: grid; gap: 10px; }
+.auth label { display: block; font-weight: 700; margin-top: 8px; }
+.auth input { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid #cbdad2; border-radius: 9px; font: inherit; }
+.auth button { cursor: pointer; }
+.auth .msg { padding: 12px 14px; border-radius: 9px; background: #e8f5ec; }
+.auth a { color: var(--blue, #1769aa); }
+.recovery-card { max-width: 600px; margin: 48px auto; padding: clamp(22px, 5vw, 38px); background: #fff; border: 1px solid var(--line, #dce8e2); border-radius: 18px; box-shadow: var(--shadow, 0 18px 45px rgba(18,59,98,.12)); }
+.recovery-card .field { margin: 18px 0; }
+.recovery-card label { display: block; font-weight: 700; margin-bottom: 7px; }
+.recovery-card input, .recovery-card select { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid #cbdad2; border-radius: 9px; font: inherit; }
+.recovery-card .message { padding: 13px 15px; border-radius: 9px; background: #e8f5ec; }
+.recovery-card .error { padding: 13px 15px; border-radius: 9px; background: #fff0ef; color: #8b1e18; }
+@media (max-width: 600px) { .auth, .recovery-card { margin: 24px auto; padding: 22px 18px; } }

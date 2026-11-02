@@ -1,0 +1,9 @@
+@import url(https://fonts.googleapis.com/css2? family=poppis:wght@400;500;700&display=swap);
+bod{
+display :flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+background:linear-gradient( to right,#e2e2e2,#c9dfff);
+color:#333;
+}
