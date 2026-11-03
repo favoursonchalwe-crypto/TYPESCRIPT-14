@@ -42,18 +42,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $from = getenv('GUF_RESET_FROM_EMAIL') ?: ('no-reply@' . preg_replace('/^www\./', '', $host));
                     $headers = "From: Green Urban Farms <{$from}>\r\nContent-Type: text/plain; charset=UTF-8";
                     if (!@mail($user['email'], $subject, $body, $headers)) error_log('Password reset email could not be sent. Configure PHP mail/SMTP for this host.');
-                } catch (Throwable $e) { error_log('Password reset request failed: ' . $e->getMessage()); }
+                } catch (Throwable $e) {
+                    error_log('Password reset request failed: ' . $e->getMessage());
+                }
             }
         }
     }
 }
 ?>
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Forgot Password | Green Urban Farms</title><link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/auth.css">
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Forgot Password | Green Urban Farms</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css">
 </head>
-<body><main class="container section"><section class="recovery-card"><a href="login.php">← Back to login</a><h1>Forgot your password?</h1><p>Find your account using the email address or phone number you registered with. For security, the reset link is sent to the email address saved on your account.</p>
-<?php if ($error !== ''): ?><p class="error" role="alert"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
-<?php if ($message !== ''): ?><p class="message" role="status"><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
-<form method="post" action="forgot-password.php" class="form"><section class="field"><label for="recovery-method">Recover account using</label><select id="recovery-method" name="method"><option value="email" <?= $method === 'email' ? 'selected' : '' ?>>Email address</option><option value="phone" <?= $method === 'phone' ? 'selected' : '' ?>>Phone number</option></select></section>
-<section class="field"><label for="identifier" id="identifier-label"><?= $method === 'phone' ? 'Registered phone number' : 'Registered email address' ?></label><input id="identifier" name="identifier" value="<?= htmlspecialchars($_POST['identifier'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required autocomplete="<?= $method === 'phone' ? 'tel' : 'email' ?>" <?= $method === 'phone' ? 'type="tel"' : 'type="email"' ?> maxlength="190"></section><button class="btn btn-primary" type="submit">Send password reset link</button></form></section></main>
-<script src="../js/recovery.js" defer></script></body></html>
+
+<body>
+    <main class="container section">
+        <section class="recovery-card"><a href="login.php">← Back to login</a>
+            <h1>Forgot your password?</h1>
+            <p>Find your account using the email address or phone number you registered with. For security, the reset link is sent to the email address saved on your account.</p>
+            <?php if ($error !== ''): ?><p class="error" role="alert"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
+            <?php if ($message !== ''): ?><p class="message" role="status"><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
+            <form method="post" action="forgot-password.php" class="form">
+                <section class="field"><label for="recovery-method">Recover account using</label><select id="recovery-method" name="method">
+                        <option value="email" <?= $method === 'email' ? 'selected' : '' ?>>Email address</option>
+                        <option value="phone" <?= $method === 'phone' ? 'selected' : '' ?>>Phone number</option>
+                    </select></section>
+                <section class="field"><label for="identifier" id="identifier-label"><?= $method === 'phone' ? 'Registered phone number' : 'Registered email address' ?></label><input id="identifier" name="identifier" value="<?= htmlspecialchars($_POST['identifier'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required autocomplete="<?= $method === 'phone' ? 'tel' : 'email' ?>" <?= $method === 'phone' ? 'type="tel"' : 'type="email"' ?> maxlength="190"></section><button class="btn btn-primary" type="submit">Send password reset link</button>
+            </form>
+        </section>
+    </main>
+    <script src="../js/recovery.js" defer></script>
+</body>
+
+</html>

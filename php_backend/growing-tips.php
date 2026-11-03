@@ -1,0 +1,72 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+?>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Practical tips for growing vegetables in urban areas and small spaces.">
+    <title>Growing Tips | Green Urban Farms</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/script.js" defer></script>
+</head>
+
+<body>
+    <?php include __DIR__ . '/header.php'; ?>
+    <main>
+        <section class="hero page-banner page-banner-resources-detail">
+            <section class="container"><span class="badge">GREEN URBAN FARMS LEARNING CENTRE</span>
+                <h1>Growing Tips</h1>
+                <p class="lead">Practical crop-growing advice for balconies, courtyards, rooftops, containers and other small urban spaces.</p>
+                <section class="actions"><a class="btn btn-primary" href="beginner-guides.php">Beginner Guides</a><a class="btn btn-secondary" href="resources.php">Back to Resources</a></section>
+            </section>
+        </section>
+        <section class="section">
+            <section class="container content">
+                <h2>Growing crops in urban areas and small spaces</h2>
+                <p>You do not need a large garden to produce fresh food. A balcony, courtyard, doorstep, rooftop or sunny windowsill can support productive containers and vertical growing spaces. Start small, choose crops suited to your conditions and make good use of every available area.</p>
+                <section class="tips-grid">
+                    <article class="tip-panel"><span class="tip-number">01</span>
+                        <h3>Choose the right crops</h3>
+                        <p>Start with compact, quick-growing crops that suit containers and frequent harvesting.</p>
+                        <ul class="list">
+                            <li><strong>Leafy vegetables:</strong> spinach, rape, lettuce and kale.</li>
+                            <li><strong>Herbs:</strong> coriander, parsley, basil and spring onions.</li>
+                            <li><strong>Fruiting crops:</strong> cherry tomatoes, peppers and bush beans in suitably sized pots.</li>
+                            <li><strong>Root crops:</strong> radishes and short-rooted carrots in deeper containers.</li>
+                        </ul>
+                    </article>
+                    <article class="tip-panel"><span class="tip-number">02</span>
+                        <h3>Use containers and vertical space</h3>
+                        <p>Reuse clean buckets, pots, grow bags and sturdy crates, ensuring they are safe for food growing and have drainage holes. Place taller containers behind shorter plants so they do not block sunlight. Use trellises or strong supports for climbing beans, cucumbers and tomatoes.</p>
+                    </article>
+                    <article class="tip-panel"><span class="tip-number">03</span>
+                        <h3>Prepare healthy growing media</h3>
+                        <p>Use a light, well-draining potting mix enriched with mature compost. Avoid compacted soil from construction areas or unknown contaminated sites. Larger containers hold moisture longer and give roots more room; choose a container depth that matches the crop.</p>
+                    </article>
+                    <article class="tip-panel"><span class="tip-number">04</span>
+                        <h3>Make the most of sunlight</h3>
+                        <p>Observe your space throughout the day before planting. Fruiting crops such as tomatoes and peppers generally need several hours of direct sunlight. Leafy greens and some herbs can tolerate partial shade. Rotate containers when one side receives more light.</p>
+                    </article>
+                    <article class="tip-panel"><span class="tip-number">05</span>
+                        <h3>Water carefully in small spaces</h3>
+                        <p>Check the soil with your finger and water when the top layer begins to dry. Water near the soil rather than over the leaves, preferably in the cooler morning. Containers dry faster than garden beds, especially in hot or windy weather, so check them regularly without leaving roots waterlogged.</p>
+                    </article>
+                    <article class="tip-panel"><span class="tip-number">06</span>
+                        <h3>Feed, inspect and harvest</h3>
+                        <p>Add mature compost or use a suitable fertiliser according to its instructions. Check the underside of leaves for pests, remove damaged growth and keep the growing area tidy. Harvest leafy vegetables a little at a time to encourage continued growth, and pick crops when they are ready.</p>
+                    </article>
+                </section>
+                <section class="callout">
+                    <h3>Try a simple starter garden</h3>
+                    <p>Begin with one container of spinach or lettuce, one pot of spring onions and one supported tomato plant if you have enough sunlight. Learn how each crop responds before expanding your garden.</p><a class="btn btn-primary" href="get-involved.php">Get Involved</a> <a class="btn btn-blue" href="contact.php">Contact Us</a>
+                </section>
+            </section>
+        </section>
+    </main>
+    <?php include __DIR__ . '/footer.php'; ?>
+</body>
+
+</html>

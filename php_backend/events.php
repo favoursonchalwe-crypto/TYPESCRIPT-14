@@ -1,93 +1,52 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-if (empty($_SESSION['user_id'])) { header('Location: login.php?action=register'); exit; }
-
-	require_once __DIR__ . '/DB.php';
-	$type = strtolower(trim($_GET['type'] ?? 'all'));
-	$conditions = ["status = 'upcoming'"];
-	$params = [];
-	if ($type === 'community-gardening') {
-		$conditions[] = "(LOWER(title) LIKE ? OR LOWER(description) LIKE ? OR LOWER(COALESCE(location,'')) LIKE ?)";
-		array_push($params, '%community%', '%garden%', '%garden%'); 
-		}
-		elseif ($type === 'workshop' || $type === 'workshops') {
-			$conditions[] = "(LOWER(title) LIKE ? OR LOWER(description) LIKE ?)"; 
-			array_push($params, '%workshop%', '%workshop%'); 
-			}
-		elseif ($type === 'community-day' || $type === 'community-days') {
-			$conditions[] = "(LOWER(title) LIKE ? OR LOWER(description) LIKE ?)"; 
-			array_push($params, '%community%', '%community%'); 
-			}
-	$sql = 'SELECT id,title,description,event_date,location,capacity,status,created_at 
-		FROM events 
-		WHERE '.implode(' AND ', $conditions).' 
-		ORDER BY event_date ASC';
-	$stmt=$pdo->prepare($sql);
-	$stmt->execute($params);
-	$items=$stmt->fetchAll(PDO::FETCH_ASSOC);
-	$title = ['community-gardening'=>'Community Gardening Events','workshop'=>'Practical Workshops','workshops'=>'Practical Workshops','community-day'=>'Community Days','community-days'=>'Community Days'][$type] ?? 'Upcoming Events';
-	function h($v){return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');}
+require_once __DIR__ . '/db.php';
+$items = $pdo->query("SELECT id, title, description, event_date, location, capacity, status, created_at FROM events WHERE status = 'upcoming' ORDER BY event_date ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<title><?= h($title) ?> | Green Urban Farms</title>
-		<link rel="stylesheet" href="../css/style.css">
-		<script src="../js/script.js" defer></script>
-	</head>
-	
-	<body>
-		<?php include __DIR__.'/header.php'; ?>
-		<main class="container section">
-			<p><a href="../events/index.html">← All event categories</a></p>
-			<h1><?= h($title) ?></h1>
-			<p class="lead">
-				Browse published upcoming events
-				and check the details before registering.
-			</p>
-			<?php if (!$items): ?>
-			<article class="card">
-				<h2>No matching events published yet</h2>
-				<p>
-					There are currently no upcoming events
-					in this category. Please check again later
-					or contact Green Urban Farms for information.
-				</p>
-				<a class="btn btn-blue" href="../contact/index.html">Contact Us</a>
-			</article>
-			<?php else: ?>
-			<section class="cards">
-				<?php foreach($items as $event): ?>
-				<article class="card">
-					<h2><?= h($event['title']) ?></h2>
-					<p><?= nl2br(h($event['description'])) ?></p>
-					<p>
-						<strong>Date and time:</strong>
-						<?= h($event['event_date']) ?>
-					</p>
-					<p>
-						<strong>Location:</strong>
-						<?= h($event['location'] ?: 'To be announced') ?>
-					</p>
-					<?php if ($event['capacity'] !== null && $event['capacity'] !== ''): ?>
-					<p>
-						<strong>Capacity:</strong> 
-						<?= (int)$event['capacity'] ?> participants
-					</p>
-					<?php endif; ?>
-					<p>
-						<strong>Status:</strong> 
-						<?= h(ucfirst($event['status'])) ?>
-					</p>
-					<a class="btn btn-primary" href="event-register.php?event_id=<?= (int)$event['id'] ?>">
-						Register for this event
-					</a>
-				</article>
-				<?php endforeach; ?>
-			</section>
-			<?php endif; ?>
-		</main>
-	</body>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Events | Green Urban Farms</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/script.js" defer></script>
+</head>
+
+<body>
+    <?php include __DIR__ . '/header.php'; ?><main>
+        <section class="page-hero page-banner page-banner-events">
+            <section class="container">
+                <p class="page-kicker">WHAT'S HAPPENING</p>
+                <h1>Events & Activities</h1>
+                <article class="event-feature-card event-feature-card-page">
+                    <div class="event-photo-wrap"><img class="section-photo" src="../images/farm_programs.jpeg" alt="Community members taking part in urban farming programmes and activities"><span class="event-photo-label">COMMUNITY IN ACTION</span></div>
+                    <section class="event-feature-copy">
+                        <p class="event-card-kicker">LEARN • CONNECT • GROW</p>
+                        <h2>Growing better, together.</h2>
+                        <p>Meet, learn and grow with your community through gardening days, practical workshops and shared activities.</p>
+                    </section>
+                </article>
+                <section class="actions"><a class="btn btn-primary" href="get-involved.php">Take Part</a><a class="btn btn-outline" href="contact.php">Enquire About Events</a></section>
+            </section>
+        </section>
+        <section class="section">
+            <section class="container">
+                <section class="section-head">
+                    <h2>Upcoming Events</h2>
+                    <p>Find an activity and join us in building greener communities.</p>
+                </section>
+                <?php if (!$items): ?><section class="empty-state">
+                        <h3>No upcoming events have been published yet</h3>
+                        <p>Please check back soon or contact us to hear about future activities.</p><a class="btn btn-primary" href="contact.php">Contact Us</a>
+                    </section><?php else: ?><section class="cards"><?php foreach ($items as $e): ?><article class="card">
+                                <section class="icon">📅</section>
+                                <h3><?= htmlspecialchars($e['title']) ?></h3>
+                                <p><?= nl2br(htmlspecialchars($e['description'])) ?></p>
+                                <p class="event-meta"><strong>Date:</strong> <?= htmlspecialchars($e['event_date']) ?><br><strong>Location:</strong> <?= htmlspecialchars($e['location'] ?: 'To be announced') ?></p><a class="btn btn-primary" href="event-register.php?event_id=<?= (int)$e['id'] ?>">Register for Event</a>
+                            </article><?php endforeach; ?></section><?php endif; ?>
+            </section>
+        </section>
+    </main><?php include __DIR__ . '/footer.php'; ?></body>
+
 </html>

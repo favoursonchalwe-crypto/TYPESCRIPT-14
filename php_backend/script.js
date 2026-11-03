@@ -1,0 +1,13 @@
+document.addEventListener("DOMContentLoaded", function () {
+  var year = document.querySelector("[data-year]");
+  if (year) year.textContent = new Date().getFullYear();
+  var button = document.querySelector(".menu-btn");
+  var nav = document.querySelector(".site-header nav");
+  if (button && nav) {
+    button.addEventListener("click", function () {
+      var open = nav.classList.toggle("is-open");
+      button.setAttribute("aria-expanded", String(open));
+      button.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    });
+  }
+});

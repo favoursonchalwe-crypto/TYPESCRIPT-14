@@ -1,169 +1,101 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-if (empty($_SESSION['user_id'])) { header('Location: login.php?action=register'); exit; }
+require_once __DIR__ . '/db.php';
+$error = '';
+$success = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['full_name'] ?? '');
+    $email = strtolower(trim($_POST['email'] ?? ''));
+    $phone = trim($_POST['phone'] ?? '');
+    $type = $_POST['participation_type'] ?? 'volunteer';
+    $allowed = ['volunteer', 'community_member', 'partner', 'donor', 'other'];
+    $interests = trim($_POST['interests'] ?? '');
+    $availability = trim($_POST['availability'] ?? '');
+    $experience = trim($_POST['experience'] ?? '');
+    $message = trim($_POST['message'] ?? '');
+    if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || !in_array($type, $allowed, true)) $error = 'Please enter your name, valid email, and participation type.';
+    else {
+        $uid = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 
-    require_once __DIR__ . '/db.php';
-
-    $success = '';
-    $error = '';
-
-    $name = '';
-    $email = '';
-    $phone = '';
-    $interests = '';
-    $experience = '';
-    $availability = '';
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $phone = trim($_POST['phone'] ?? '');
-        $interests = trim($_POST['interests'] ?? '');
-        $experience = trim($_POST['experience'] ?? '');
-        $availability = trim($_POST['availability'] ?? '');
-
-        if (
-            $name === '' ||
-            !filter_var($email, FILTER_VALIDATE_EMAIL) ||
-            $interests === '' ||
-            $availability === ''
-        ) {
-            $error = 'Please complete all required fields and enter a valid email address.';
-
-        } elseif (strlen($name) > 100 || strlen($email) > 150 || strlen($phone) > 30) {
-            $error = 'One or more fields exceed the allowed length.';
-
-        } else {
-            try {
-                $stmt = $pdo->prepare("
-                    INSERT INTO volunteer_applications
-                        (name, email, phone, interests, experience, availability, status)
-                    VALUES
-                        (?, ?, ?, ?, ?, ?, 'pending')
+        $q = $pdo->prepare("
+                INSERT INTO volunteer_applications(name,email,phone,interests,experience,availability,status) 
+                VALUES
+                (?,?,?,?,?,?, 'pending')
                 ");
 
-                $stmt->execute([
-                    $name,
-                    $email,
-                    $phone !== '' ? $phone : null,
-                    $interests,
-                    $experience !== '' ? $experience : null,
-                    $availability
-                ]);
+        $q->execute([
+            $name,
+            $email,
+            $phone ?: null,
+            $interests ?: null,
+            $experience ?: null,
+            $availability ?: null,
+        ]);
 
-                $success = 'Thank you! Your volunteer application has been submitted successfully.';
-
-                $name = '';
-                $email = '';
-                $phone = '';
-                $interests = '';
-                $experience = '';
-                $availability = '';
-
-            } catch (PDOException $e) {
-                error_log('Volunteer application error: ' . $e->getMessage());
-                $error = 'We could not submit your application. Please try again later.';
-            }
-        }
+        $success = 'Thank you. Your application has been submitted.';
     }
+}
 ?>
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Get Involved | Green Urban Farms</title>
-        <link rel="stylesheet" href="../css/style.css">
-    </head>
 
-    <body>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Get Involved | Green Urban Farms</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/script.js" defer></script>
+</head>
 
-        <?php include __DIR__ . '/header.php'; ?>
+<body>
+    <?php include __DIR__ . '/header.php'; ?><main>
+        <section class="page-hero page-banner page-banner-involved">
+            <section class="container">
+                <p class="page-kicker">BE PART OF THE CHANGE</p>
+                <h1>Grow something good with us.</h1>
+                <p class="lead">Volunteer, participate, partner or share your skills. Every contribution helps build greener, healthier communities.</p>
+                <section class="actions"><a class="btn btn-primary" href="#application">Apply to Get Involved</a><a class="btn btn-outline" href="contact.php">Talk to Our Team</a></section>
+            </section>
+        </section>
+        <section class="section" id="application">
+            <section class="container split">
+                <section>
+                    <h2>There is a place for you</h2><img class="section-photo inline-feature-photo" src="../images/Get-Intouch.jpg" alt="People connecting and getting involved in community growing">
+                    <p>Whether you have growing experience or are just getting started, you can contribute time, ideas and energy to community food-growing initiatives.</p>
+                    <section class="cards involvement-options">
+                        <article class="card">
+                            <section class="icon">🌱</section>
+                            <h3>Volunteer</h3>
+                            <p>Support garden activities and community events.</p>
+                        </article>
+                        <article class="card">
+                            <section class="icon">🤝</section>
+                            <h3>Partner</h3>
+                            <p>Work with us to strengthen local growing projects.</p>
+                        </article>
+                    </section>
+                </section>
+                <form class="form-card" method="post">
+                    <h2>Submit an Application</h2><?php if ($error): ?><p role="alert"><?= htmlspecialchars($error) ?></p><?php endif; ?><?php if ($success): ?><p role="status"><?= htmlspecialchars($success) ?></p><?php endif; ?><section class="form-grid">
+                        <section class="field"><label for="full_name">Full name</label><input id="full_name" name="full_name" maxlength="150" required></section>
+                        <section class="field"><label for="email">Email address</label><input id="email" name="email" type="email" maxlength="190" required></section>
+                        <section class="field"><label for="phone">Phone</label><input id="phone" name="phone" maxlength="40"></section>
+                        <section class="field"><label for="participation_type">How would you like to participate?</label><select id="participation_type" name="participation_type">
+                                <option value="volunteer">Volunteer</option>
+                                <option value="community_member">Community member</option>
+                                <option value="partner">Partner</option>
+                                <option value="donor">Donor</option>
+                                <option value="other">Other</option>
+                            </select></section>
+                        <section class="field field-full"><label for="interests">Areas of interest</label><textarea id="interests" name="interests"></textarea></section>
+                        <section class="field"><label for="experience">Relevant experience</label><input id="experience" name="experience" maxlength="500"></section>
+                        <section class="field"><label for="availability">Availability</label><input id="availability" name="availability" maxlength="150"></section>
+                        <section class="field field-full"><label for="message">Additional message</label><textarea id="message" name="message"></textarea></section>
+                        <section class="field field-full"><button class="btn btn-primary" type="submit">Submit Application</button></section>
+                    </section>
+                </form>
+            </section>
+        </section>
+    </main><?php include __DIR__ . '/footer.php'; ?></body>
 
-        <main class="container section">
-            <h1>Get Involved</h1>
-            <p>
-                Join Green Urban Farms and help us promote sustainable
-                agriculture and community development.
-            </p>
-
-            <?php if ($success !== ''): ?>
-                <p class="success" role="status">
-                    <?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?>
-                </p>
-            <?php endif; ?>
-
-            <?php if ($error !== ''): ?>
-                <p class="error" role="alert">
-                    <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
-                </p>
-            <?php endif; ?>
-
-            <form class="form" method="POST" action="get-involved.php">
-
-                <label for="name">Full Name *</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    maxlength="100"
-                    value="<?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?>"
-                    required
-                >
-
-                <label for="email">Email Address *</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    maxlength="150"
-                    value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>"
-                    required
-                >
-
-                <label for="phone">Phone Number</label>
-                <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    maxlength="30"
-                    value="<?= htmlspecialchars($phone, ENT_QUOTES, 'UTF-8') ?>"
-                >
-
-                <label for="interests">Areas of Interest *</label>
-                <select id="interests" name="interests" required>
-                    <option value="">Select an area</option>
-                    <option value="Community Gardening" <?= $interests === 'Community Gardening' ? 'selected' : '' ?>>Community Gardening</option>
-                    <option value="Urban Farming" <?= $interests === 'Urban Farming' ? 'selected' : '' ?>>Urban Farming</option>
-                    <option value="Environmental Education" <?= $interests === 'Environmental Education' ? 'selected' : '' ?>>Environmental Education</option>
-                    <option value="Community Outreach" <?= $interests === 'Community Outreach' ? 'selected' : '' ?>>Community Outreach</option>
-                    <option value="Other" <?= $interests === 'Other' ? 'selected' : '' ?>>Other</option>
-                </select>
-
-                <label for="experience">Previous Experience</label>
-                <textarea
-                    id="experience"
-                    name="experience"
-                    rows="4"
-                ><?= htmlspecialchars($experience, ENT_QUOTES, 'UTF-8') ?></textarea>
-
-                <label for="availability">Availability *</label>
-                <select id="availability" name="availability" required>
-                    <option value="">Select your availability</option>
-                    <option value="Weekdays" <?= $availability === 'Weekdays' ? 'selected' : '' ?>>Weekdays</option>
-                    <option value="Weekends" <?= $availability === 'Weekends' ? 'selected' : '' ?>>Weekends</option>
-                    <option value="Both" <?= $availability === 'Both' ? 'selected' : '' ?>>Both weekdays and weekends</option>
-                </select>
-
-                <button type="submit" class="btn btn-primary">
-                    Submit Application
-                </button>
-
-            </form>
-
-        </main>
-
-    </body>
 </html>
