@@ -1,11 +1,9 @@
-```yaml
 name: Deploy Green Urban Farms
 
 on:
   push:
     branches:
       - main
-
   workflow_dispatch:
 
 jobs:
@@ -37,4 +35,3 @@ jobs:
             **/db.php
             **/recovery-config.php
             **/.gitignore
-```
