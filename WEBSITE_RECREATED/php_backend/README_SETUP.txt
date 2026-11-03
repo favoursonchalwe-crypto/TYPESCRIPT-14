@@ -1,1 +1,0 @@
-See ../README_CONNECT_TO_EXISTING_DATABASE.txt for installation instructions. The existing database is green_urban. Do not import the reference schema files or recreate your database. DB.php uses XAMPP defaults (root with a blank password) unless your local MySQL configuration differs.
