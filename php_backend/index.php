@@ -1,134 +1,25 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 require_once __DIR__ . '/db.php';
-$registerError = '';
-$registerSuccess = '';
+$registerError = ''; $registerSuccess = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['form_action'] ?? '') === 'register') {
-  $name = trim($_POST['name'] ?? '');
-  $email = strtolower(trim($_POST['email'] ?? ''));
-  $password = $_POST['password'] ?? '';
+  $name = trim($_POST['name'] ?? ''); $email = strtolower(trim($_POST['email'] ?? '')); $password = $_POST['password'] ?? '';
   if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 8) $registerError = 'Enter your name, a valid email, and a password of at least 8 characters.';
-  else {
-    $q = $pdo->prepare('SELECT id FROM users WHERE email = ?');
-    $q->execute([$email]);
+  else { $q = $pdo->prepare('SELECT id FROM users WHERE email = ?'); $q->execute([$email]);
     if ($q->fetch()) $registerError = 'An account with that email already exists. Please log in.';
-    else {
-      $q = $pdo->prepare("INSERT INTO users (name,email,password,role) VALUES (?,?,?,'user')");
-      $q->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT)]);
-      $registerSuccess = 'Your account was created. You can now log in.';
-    }
+    else { $q = $pdo->prepare("INSERT INTO users (name,email,password,role) VALUES (?,?,?,'user')"); $q->execute([$name,$email,password_hash($password, PASSWORD_DEFAULT)]); $registerSuccess = 'Your account was created. You can now log in.'; }
   }
 }
 ?>
 <!doctype html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Green Urban Farms empowers communities through sustainable urban agriculture.">
-  <title>Home | Green Urban Farms</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <script src="../js/script.js" defer></script>
-</head>
-
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Green Urban Farms empowers communities through sustainable urban agriculture."><title>Home | Green Urban Farms</title><link rel="stylesheet" href="../css/style.css"><script src="../js/script.js" defer></script></head>
 <body>
-  <?php include __DIR__ . '/header.php'; ?>
-  <main>
-    <section class="hero home-hero page-banner page-banner-home">
-      <section class="container hero-grid">
-        <section><span class="badge">SUSTAINABLE URBAN AGRICULTURE</span>
-          <h1>Grow Fresh. Grow Together.</h1>
-          <p class="lead">Green Urban Farms empowers urban communities to grow fresh, healthy food through sustainable farming education, community participation and accessible urban agriculture initiatives.</p>
-          <section class="actions"><a class="btn btn-primary" href="programs.php">Explore Programs</a><?php if (empty($_SESSION['user_id'])): ?><a class="btn btn-secondary" href="login.php?action=register">Join Our Community</a><?php endif; ?></section>
-          <section class="stat-row">
-            <section class="stat"><strong>Learn</strong><span>Practical growing skills</span></section>
-            <section class="stat"><strong>Grow</strong><span>Fresh food in small spaces</span></section>
-            <section class="stat"><strong>Connect</strong><span>Stronger communities</span></section>
-          </section>
-        </section>
-        <section class="hero-card"><img class="section-photo hero-feature-photo" src="../images/Fresh.jpg" alt="Fresh vegetables growing in an urban garden">
-          <h2>Small spaces. Big harvests.</h2>
-          <p>Discover practical ways to grow vegetables and herbs in containers, home gardens and shared community spaces.</p>
-        </section>
-      </section>
-    </section>
-    <section class="section">
-      <section class="container">
-        <section class="section-head">
-          <p class="page-kicker">WHAT WE DO</p>
-          <h2>Practical pathways to greener communities</h2>
-          <p>Explore the services and opportunities that help people learn, grow food and make a difference close to home.</p>
-        </section>
-        <section class="cards">
-          <article class="card">
-            <section class="icon">🎓</section>
-            <h3>Training & Learning</h3>
-            <p>Build confidence through accessible training, demonstrations and useful growing resources.</p><a class="btn btn-primary" href="programs.php">Explore Programs</a>
-          </article>
-          <article class="card">
-            <section class="icon">🥬</section>
-            <h3>Urban Food Growing</h3>
-            <p>Discover ways to grow vegetables and herbs in containers, yards and shared spaces.</p><a class="btn btn-primary" href="resources.php">Browse Resources</a>
-          </article>
-          <article class="card">
-            <section class="icon">🤝</section>
-            <h3>Community Participation</h3>
-            <p>Meet neighbours, volunteer and support greener, healthier communities.</p><a class="btn btn-primary" href="get-involved.php">Get Involved</a>
-          </article>
-        </section>
-      </section>
-    </section>
-    <section class="section section-soft">
-      <section class="container split">
-        <section>
-          <p class="page-kicker">OUR APPROACH</p>
-          <h2>Small steps make a lasting difference</h2>
-          <p>Urban farming can start with a single container, a few seeds and a willingness to learn. We help turn that first step into practical skills and shared community action.</p>
-          <section class="actions"><a class="btn btn-blue" href="about.php">Learn About Us</a><a class="btn btn-outline" href="events.php">See Our Events</a></section>
-        </section>
-        <section class="feature-image home-vegetables-image"><img class="section-photo panel-photo" src="../images/Vegetables.jpg" alt="Fresh vegetables harvested from an urban garden"></section>
-      </section>
-    </section>
-    <section class="section">
-      <section class="container">
-        <section class="cta-band">
-          <section>
-            <h2>Ready to start growing?</h2>
-            <p>Take part in a programme, learn a new skill or connect with people building greener neighbourhoods.</p>
-          </section>
-          <section class="actions"><?php if (empty($_SESSION['user_id'])): ?><a class="btn btn-secondary" href="login.php?action=register">Get Started</a><?php endif; ?><a class="btn btn-blue" href="contact.php">Contact Us</a></section>
-        </section>
-      </section>
-    </section>
-  </main>
-  <footer class="site-footer">
-    <section class="container">
-      <section class="footer-grid">
-        <section>
-          <h3>Green Urban Farms</h3>
-          <p>Empowering urban communities to grow fresh, healthy food through sustainable farming education and community participation.</p>
-        </section>
-        <section>
-          <h4>Explore</h4>
-          <ul class="footer-links">
-            <li><a href="about.php">About Us</a></li>
-            <li><a href="programs.php">Programs</a></li>
-            <li><a href="resources.php">Resources</a></li>
-            <li><a href="events.php">Events</a></li>
-          </ul>
-        </section>
-        <section>
-          <h4>Get Connected</h4>
-          <ul class="footer-links">
-            <li><a href="get-involved.php">Get Involved</a></li>
-            <li><a href="contact.php">Contact Us</a></li>
-          </ul>
-        </section>
-      </section>
-      <section class="copyright">© <span data-year>2026</span> Green Urban Farms. Growing a greener future together.</section>
-    </section>
-  </footer>
-</body>
-
-</html>
+<?php include __DIR__ . '/header.php'; ?>
+<main>
+<section class="hero home-hero page-banner page-banner-home"><section class="container hero-grid"><section><span class="badge">SUSTAINABLE URBAN AGRICULTURE</span><h1>Grow Fresh. Grow Together.</h1><p class="lead">Green Urban Farms empowers urban communities to grow fresh, healthy food through sustainable farming education, community participation and accessible urban agriculture initiatives.</p><section class="actions"><a class="btn btn-primary" href="programs.php">Explore Programs</a><?php if (empty($_SESSION['user_id'])): ?><a class="btn btn-secondary" href="login.php?action=register">Join Our Community</a><?php endif; ?></section><section class="stat-row"><section class="stat"><strong>Learn</strong><span>Practical growing skills</span></section><section class="stat"><strong>Grow</strong><span>Fresh food in small spaces</span></section><section class="stat"><strong>Connect</strong><span>Stronger communities</span></section></section></section><section class="hero-card"><img class="section-photo hero-feature-photo" src="../images/Fresh.jpg" alt="Fresh vegetables growing in an urban garden"><h2>Small spaces. Big harvests.</h2><p>Discover practical ways to grow vegetables and herbs in containers, home gardens and shared community spaces.</p></section></section></section>
+<section class="section"><section class="container"><section class="section-head"><p class="page-kicker">WHAT WE DO</p><h2>Practical pathways to greener communities</h2><p>Explore the services and opportunities that help people learn, grow food and make a difference close to home.</p></section><section class="cards"><article class="card"><section class="icon">🎓</section><h3>Training & Learning</h3><p>Build confidence through accessible training, demonstrations and useful growing resources.</p><a class="btn btn-primary" href="programs.php">Explore Programs</a></article><article class="card"><section class="icon">🥬</section><h3>Urban Food Growing</h3><p>Discover ways to grow vegetables and herbs in containers, yards and shared spaces.</p><a class="btn btn-primary" href="resources.php">Browse Resources</a></article><article class="card"><section class="icon">🤝</section><h3>Community Participation</h3><p>Meet neighbours, volunteer and support greener, healthier communities.</p><a class="btn btn-primary" href="get-involved.php">Get Involved</a></article></section></section></section>
+<section class="section section-soft"><section class="container split"><section><p class="page-kicker">OUR APPROACH</p><h2>Small steps make a lasting difference</h2><p>Urban farming can start with a single container, a few seeds and a willingness to learn. We help turn that first step into practical skills and shared community action.</p><section class="actions"><a class="btn btn-blue" href="about.php">Learn About Us</a><a class="btn btn-outline" href="events.php">See Our Events</a></section></section><section class="feature-image home-vegetables-image"><img class="section-photo panel-photo" src="../images/Vegetables.jpg" alt="Fresh vegetables harvested from an urban garden"></section></section></section>
+<section class="section"><section class="container"><section class="cta-band"><section><h2>Ready to start growing?</h2><p>Take part in a programme, learn a new skill or connect with people building greener neighbourhoods.</p></section><section class="actions"><?php if (empty($_SESSION['user_id'])): ?><a class="btn btn-secondary" href="login.php?action=register">Get Started</a><?php endif; ?><a class="btn btn-blue" href="contact.php">Contact Us</a></section></section></section></section>
+</main>
+<footer class="site-footer"><section class="container"><section class="footer-grid"><section><h3>Green Urban Farms</h3><p>Empowering urban communities to grow fresh, healthy food through sustainable farming education and community participation.</p></section><section><h4>Explore</h4><ul class="footer-links"><li><a href="about.php">About Us</a></li><li><a href="programs.php">Programs</a></li><li><a href="resources.php">Resources</a></li><li><a href="events.php">Events</a></li></ul></section><section><h4>Get Connected</h4><ul class="footer-links"><li><a href="get-involved.php">Get Involved</a></li><li><a href="contact.php">Contact Us</a></li></ul></section></section><section class="copyright">© <span data-year>2026</span> Green Urban Farms. Growing a greener future together.</section></section></footer>
+</body></html>

@@ -1,0 +1,18 @@
+GREEN URBAN FARMS — DESIGN REFRESH
+
+This refresh applies a consistent, original visual layout inspired by the information hierarchy and button arrangement observed on ZAWEM Zambia. It does not copy ZAWEM text, images, branding, logo, or source code.
+
+DESIGN UPDATES
+- Shared green/blue visual system, typography, spacing and responsive layout.
+- Clear page introductions, prominent action buttons, organised content cards and CTA bands.
+- Consistent PHP header and footer, navigation and login/register calls to action.
+- Updated PHP home, programs, events, resources, contact, get-involved, login/register, event registration and admin presentation.
+- Updated shared styling for all existing HTML pages and nested programme/resource pages.
+- Cards and content panels have no hover animation; hover feedback is limited to buttons.
+- Existing image files and their paths have been preserved. The recovered source archive contains Background.jpg and Logo.svg in its images folder; no other image files were present in that archive.
+
+IMPORTANT TESTING NOTES
+- PHP files were checked with PHP CLI syntax lint and passed.
+- The live MySQL database was not available in this build environment, so form submission, authentication, event registration and admin database operations still need to be tested locally with XAMPP.
+- Keep your current working project as a backup. Extract this ZIP into a separate folder first, then compare/test locally before replacing any files or deploying.
+- The PHP backend in this archive expects the existing db.php/DB.php database configuration from your working local setup. Do not overwrite your live database credentials with the sample/local connection settings.

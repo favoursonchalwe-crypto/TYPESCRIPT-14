@@ -1,0 +1,14 @@
+GREEN URBAN FARMS IMAGE AND BRAND NOTES
+
+Original logo restored as images/Logo.png and used in HTML/PHP headers. The earlier generated placeholder Logo.svg is retained as a separate asset but is no longer used by page headers.
+
+Preserved original photography and placements:
+- main.jpg: homepage background
+- Fresh.jpg: homepage feature card
+- Guide.jpeg: About Us feature image
+- small_places.jpeg: Resources feature image
+- farm_programs.jpeg: Events feature card
+- Get-Intouch.jpg: Get Involved feature card
+- Customer.jpg: Contact Us feature card
+
+Footer Account Login links have been removed. Growing Tips now includes practical crop advice for urban and small-space gardens. Events feature imagery has a more polished, responsive presentation.

@@ -1,66 +1,26 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-require_once __DIR__ . '/DB.php';
-$token = trim($_GET['token'] ?? $_POST['token'] ?? '');
-$error = '';
-$success = '';
-$reset = false;
-if ($token !== '' && preg_match('/^[a-f0-9]{64}$/', $token)) {
-    try {
-        $stmt = $pdo->prepare('SELECT id, user_id FROM password_resets WHERE token_hash = ? AND used_at IS NULL AND expires_at > NOW() LIMIT 1');
-        $stmt->execute([hash('sha256', $token)]);
-        $reset = $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
-    } catch (PDOException $e) {
-        error_log('Password reset token lookup failed: ' . $e->getMessage());
-    }
+require_once __DIR__ . '/recovery-common.php';
+$error=''; $validUser=0; $resetRow=0;
+$token=trim($_GET['token']??''); $ticket=trim($_GET['ticket']??'');
+if ($token !== '') {
+ $q=$pdo->prepare("SELECT id,user_id FROM password_resets WHERE method='email' AND secret_hash=? AND used_at IS NULL AND expires_at>NOW() LIMIT 1"); $q->execute([hash('sha256',$token)]); $r=$q->fetch(); if($r){$validUser=(int)$r['user_id'];$resetRow=(int)$r['id'];}
+} elseif ($ticket !== '' && !empty($_SESSION['verified_reset_user']) && !empty($_SESSION['verified_reset_ticket']) && hash_equals($_SESSION['verified_reset_ticket'],$ticket) && ($_SESSION['verified_reset_expires']??0)>=time()) {
+ $validUser=(int)$_SESSION['verified_reset_user'];
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $password = $_POST['password'] ?? '';
-    $confirm = $_POST['confirm_password'] ?? '';
-    if (!$reset) $error = 'This reset link is invalid, expired, or has already been used. Please request a new one.';
-    elseif (strlen($password) < 8) $error = 'Your new password must be at least 8 characters long.';
-    elseif ($password !== $confirm) $error = 'The passwords do not match.';
-    else {
-        try {
-            $pdo->beginTransaction();
-            $update = $pdo->prepare('UPDATE users SET password = ? WHERE id = ?');
-            $update->execute([password_hash($password, PASSWORD_DEFAULT), (int)$reset['user_id']]);
-            $used = $pdo->prepare('UPDATE password_resets SET used_at = NOW() WHERE id = ? AND used_at IS NULL');
-            $used->execute([(int)$reset['id']]);
-            $pdo->commit();
-            $success = 'Your password has been reset successfully. You can now log in.';
-            $reset = false;
-        } catch (Throwable $e) {
-            if ($pdo->inTransaction()) $pdo->rollBack();
-            error_log('Password reset update failed: ' . $e->getMessage());
-            $error = 'We could not reset your password. Please request a new link and try again.';
-        }
-    }
+if ($_SERVER['REQUEST_METHOD']==='POST') {
+ if (!recovery_check_csrf()) $error='Session expired. Refresh and try again.';
+ else {
+  // Revalidate credentials from POST rather than trusting a posted user id.
+  $token=trim($_POST['token']??''); $ticket=trim($_POST['ticket']??''); $validUser=0; $resetRow=0;
+  if($token!==''){$q=$pdo->prepare("SELECT id,user_id FROM password_resets WHERE method='email' AND secret_hash=? AND used_at IS NULL AND expires_at>NOW() LIMIT 1");$q->execute([hash('sha256',$token)]);$r=$q->fetch();if($r){$validUser=(int)$r['user_id'];$resetRow=(int)$r['id'];}}
+  elseif($ticket!=='' && !empty($_SESSION['verified_reset_user']) && hash_equals($_SESSION['verified_reset_ticket']??'', $ticket) && ($_SESSION['verified_reset_expires']??0)>=time()) $validUser=(int)$_SESSION['verified_reset_user'];
+  $pw=$_POST['password']??''; $confirm=$_POST['confirm_password']??'';
+  if(!$validUser)$error='This reset link or verification session is invalid or expired. Start again.';
+  elseif(strlen($pw)<8)$error='Your new password must be at least 8 characters.';
+  elseif($pw!==$confirm)$error='The passwords do not match.';
+  else{$pdo->prepare('UPDATE users SET password=? WHERE id=?')->execute([password_hash($pw,PASSWORD_DEFAULT),$validUser]);if($resetRow)$pdo->prepare('UPDATE password_resets SET used_at=NOW() WHERE id=?')->execute([$resetRow]);else $pdo->prepare("UPDATE password_resets SET used_at=NOW() WHERE user_id=? AND method='sms' AND used_at IS NULL")->execute([$validUser]);unset($_SESSION['verified_reset_user'],$_SESSION['verified_reset_ticket'],$_SESSION['verified_reset_expires']);header('Location: login.php?reset=success');exit;}
+ }
 }
+if(!$validUser && $_SERVER['REQUEST_METHOD']!=='POST') $error='This reset link or verification session is invalid or expired. Start again.';
 ?>
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Reset Password | Green Urban Farms</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/auth.css">
-</head>
-
-<body>
-    <main class="container section">
-        <section class="recovery-card">
-            <h1>Choose a new password</h1>
-            <?php if ($error !== ''): ?><p class="error" role="alert"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
-            <?php if ($success !== ''): ?><p class="message" role="status"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
-                <p><a class="btn btn-primary" href="login.php">Go to login</a></p>
-            <?php elseif ($reset): ?><p>Choose a strong password with at least 8 characters.</p>
-                <form method="post" action="reset-password.php"><input type="hidden" name="token" value="<?= htmlspecialchars($token, ENT_QUOTES, 'UTF-8') ?>"><label for="password">New password</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required><label for="confirm-password">Confirm new password</label><input id="confirm-password" name="confirm_password" type="password" minlength="8" autocomplete="new-password" required><button class="btn btn-primary" type="submit">Reset password</button></form>
-            <?php else: ?><p>This reset link is invalid, expired, or has already been used. Please request a new one.</p><a href="forgot-password.php">Request a new reset link</a><?php endif; ?>
-        </section>
-    </main>
-</body>
-
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Set New Password | Green Urban Farms</title><link rel="stylesheet" href="../css/style.css"></head><body><?php include __DIR__.'/header.php';?><main><section class="page-hero page-banner page-banner-login"><section class="container"><h1>Set a new password</h1><p class="lead">Choose a strong password for your Green Urban Farms account.</p></section></section><section class="section section-soft"><section class="container"><section class="form-card auth-card"><h2>New Password</h2><?php if($error):?><p role="alert"><?=h($error)?></p><?php endif;?><?php if($validUser):?><form method="post" class="form"><input type="hidden" name="csrf" value="<?=h(recovery_csrf())?>"><input type="hidden" name="token" value="<?=h($token)?>"><input type="hidden" name="ticket" value="<?=h($ticket)?>"><section class="field"><label for="password">New password</label><input id="password" type="password" name="password" minlength="8" autocomplete="new-password" required></section><section class="field"><label for="confirm_password">Confirm new password</label><input id="confirm_password" type="password" name="confirm_password" minlength="8" autocomplete="new-password" required></section><button class="btn btn-primary" type="submit">Update Password</button></form><?php else:?><p><a href="forgot-password.php">Request a new recovery link or code</a></p><?php endif;?></section></section></section></main><?php include __DIR__.'/footer.php';?></body></html>

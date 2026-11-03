@@ -2,42 +2,9 @@
 require_once __DIR__ . '/db.php';
 $items = $pdo->query("SELECT id, title, description, file_path, resource_url, category, created_at FROM resources ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Resources | Green Urban Farms</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <script src="../js/script.js" defer></script>
-</head>
-
-<body>
-    <?php include __DIR__ . '/header.php'; ?><main>
-        <section class="page-hero page-banner page-banner-resources">
-            <section class="container">
-                <p class="page-kicker">GROW YOUR KNOWLEDGE</p>
-                <h1>Farming Resources</h1><img class="section-photo page-feature-photo" src="../images/small_places.jpeg" alt="Small-space urban food growing">
-                <p class="lead">Explore beginner-friendly guides, practical growing advice and useful learning materials for sustainable urban food production.</p>
-                <section class="actions"><a class="btn btn-primary" href="beginner-guides.php">Beginner Guides</a><a class="btn btn-outline" href="growing-tips.php">Growing Tips</a></section>
-            </section>
-        </section>
-        <section class="section">
-            <section class="container">
-                <section class="section-head">
-                    <h2>Learning library</h2>
-                    <p>Resources published by Green Urban Farms to help you grow with confidence.</p>
-                </section>
-                <?php if (!$items): ?><section class="empty-state">
-                        <h3>Resources will be added soon</h3>
-                        <p>In the meantime, explore our beginner guides and growing tips.</p><a class="btn btn-primary" href="beginner-guides.php">Explore Guides</a>
-                    </section><?php else: ?><section class="cards"><?php foreach ($items as $r): ?><article class="card">
-                                <section class="icon">📘</section><?php if (!empty($r['category'])): ?><p class="page-kicker"><?= htmlspecialchars($r['category']) ?></p><?php endif; ?><h3><?= htmlspecialchars($r['title']) ?></h3>
-                                <p><?= nl2br(htmlspecialchars($r['description'] ?? '')) ?></p><?php if (!empty($r['resource_url'])): ?><a class="btn btn-primary" href="<?= htmlspecialchars($r['resource_url']) ?>" target="_blank" rel="noopener">Open Resource</a><?php elseif (!empty($r['file_path'])): ?><a class="btn btn-primary" href="<?= htmlspecialchars($r['file_path']) ?>" download>Download Resource</a><?php endif; ?>
-                            </article><?php endforeach; ?></section><?php endif; ?>
-            </section>
-        </section>
-    </main><?php include __DIR__ . '/footer.php'; ?></body>
-
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Resources | Green Urban Farms</title><link rel="stylesheet" href="../css/style.css"><script src="../js/script.js" defer></script></head><body>
+<?php include __DIR__ . '/header.php'; ?><main>
+<section class="page-hero page-banner page-banner-resources"><section class="container"><p class="page-kicker">GROW YOUR KNOWLEDGE</p><h1>Farming Resources</h1><img class="section-photo page-feature-photo" src="../images/small_places.jpeg" alt="Small-space urban food growing"><p class="lead">Explore beginner-friendly guides, practical growing advice and useful learning materials for sustainable urban food production.</p><section class="actions"><a class="btn btn-primary" href="beginner-guides.php">Beginner Guides</a><a class="btn btn-outline" href="growing-tips.php">Growing Tips</a></section></section></section>
+<section class="section"><section class="container"><section class="section-head"><h2>Learning library</h2><p>Resources published by Green Urban Farms to help you grow with confidence.</p></section>
+<?php if (!$items): ?><section class="empty-state"><h3>Resources will be added soon</h3><p>In the meantime, explore our beginner guides and growing tips.</p><a class="btn btn-primary" href="beginner-guides.php">Explore Guides</a></section><?php else: ?><section class="cards"><?php foreach ($items as $r): ?><article class="card"><section class="icon">📘</section><?php if (!empty($r['category'])): ?><p class="page-kicker"><?= htmlspecialchars($r['category']) ?></p><?php endif; ?><h3><?= htmlspecialchars($r['title']) ?></h3><p><?= nl2br(htmlspecialchars($r['description'] ?? '')) ?></p><?php if (!empty($r['resource_url'])): ?><a class="btn btn-primary" href="<?= htmlspecialchars($r['resource_url']) ?>" target="_blank" rel="noopener">Open Resource</a><?php elseif (!empty($r['file_path'])): ?><a class="btn btn-primary" href="<?= htmlspecialchars($r['file_path']) ?>" download>Download Resource</a><?php endif; ?></article><?php endforeach; ?></section><?php endif; ?></section></section>
+</main><?php include __DIR__ . '/footer.php'; ?></body></html>

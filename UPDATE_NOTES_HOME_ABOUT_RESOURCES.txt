@@ -1,0 +1,25 @@
+GREEN URBAN FARMS - HOME, ABOUT US & RESOURCES UPDATE
+
+Changes in this update:
+1. PHP homepage hides "Join Our Community" and "Get Started" whenever a user session is logged in. Both remain visible to visitors who are not logged in.
+2. Home page "Learn About Us" now opens php_backend/about.php.
+3. The home page image panel beside "See Our Events" now uses the original images/Vegetables.jpg asset.
+4. About Us mission/vision image now uses images/Background.jpg.
+5. The three About Us values cards have a refined professional visual treatment without card movement or hover animation.
+6. Added PHP pages php_backend/beginner-guides.php and php_backend/growing-tips.php, using the shared PHP header/footer and navigation.
+7. Resources page buttons now open those PHP pages rather than the static HTML files. The static resources page buttons were also routed to the PHP pages.
+8. Added lowercase php_backend/db.php compatibility copy because existing PHP pages require that exact filename; this avoids case-sensitive hosting failures while retaining DB.php.
+
+TESTING:
+- PHP syntax check run on all PHP files; all passed.
+- ZIP integrity check run after packaging.
+- Browser and live database interaction still need to be tested in local XAMPP before deployment.
+
+XAMPP test:
+http://localhost/WEBSITE_RECREATED/
+Direct pages:
+http://localhost/WEBSITE_RECREATED/php_backend/index.php
+http://localhost/WEBSITE_RECREATED/php_backend/about.php
+http://localhost/WEBSITE_RECREATED/php_backend/resources.php
+http://localhost/WEBSITE_RECREATED/php_backend/beginner-guides.php
+http://localhost/WEBSITE_RECREATED/php_backend/growing-tips.php

@@ -1,0 +1,20 @@
+GREEN URBAN FARMS — PAGE-WIDE IMAGE HERO UPDATE
+
+The ZAWEM-inspired layout is now applied consistently across the website. Each content page starts with a wide, full-width photographic banner, a dark readable overlay, a page-specific heading and description, and relevant call-to-action buttons where appropriate.
+
+Original Green Urban Farms photographs are reused without renaming or moving them:
+- Home: images/main.jpg
+- About Us: images/Guide.jpeg
+- Programs and programme detail pages: images/Fresh.jpg
+- Events and event detail pages: images/farm_programs.jpeg
+- Resources, Growing Tips, Beginner Guides and FAQs: images/small_places.jpeg
+- Get Involved: images/Get-Intouch.jpg
+- Contact Us: images/Customer.jpg
+- Login/Register: images/Background.jpg
+- Admin: images/main.jpg
+
+The shared CSS keeps the design responsive for desktop, tablet and phone. It retains the Green Urban Farms logo and colours, does not add card movement/hover effects, and preserves the existing page content and PHP form/database handlers. Only buttons retain hover styling.
+
+XAMPP test: extract this folder under C:\\xampp\\htdocs\\ and open http://localhost/WEBSITE_RECREATED/ . For PHP/database-backed pages, ensure Apache and MySQL are running and the existing green_urban database connection settings in php_backend/DB.php are correct.
+
+Validation performed for this package: ZIP integrity test and PHP syntax checks. A full browser/database test has not been performed here; test locally before uploading to InfinityFree.

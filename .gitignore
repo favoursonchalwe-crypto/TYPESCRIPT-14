@@ -1,0 +1,5 @@
+# Private credentials
+php_backend/recovery-config.php
+php_backend/.gitignore.txt
+.env
+*.log
