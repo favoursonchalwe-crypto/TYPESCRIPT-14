@@ -1,3 +1,4 @@
+```yaml
 name: Deploy Green Urban Farms
 
 on:
@@ -24,7 +25,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftp
-          server-dir: ./
+          server-dir: htdocs/
           dangerous-clean-slate: false
           exclude: |
             **/.git*
@@ -34,3 +35,6 @@ jobs:
             **/README*
             **/DB.php
             **/db.php
+            **/recovery-config.php
+            **/.gitignore
+```
